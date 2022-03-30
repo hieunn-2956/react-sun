@@ -1,0 +1,37 @@
+@import "../../scss/variables.scss";
+@import "../../scss/mixin.scss";
+
+header {
+  @include flex($justify: flex-start, $align: center, $gap: 2rem);
+  height: 4rem;
+  background-color: $color-grey-dark-3;
+  overflow: hidden;
+
+  .logo-image {
+    height: 100%;
+    width: 9rem;
+  }
+
+  .brand {
+    font-weight: bold;
+    color: $color-white;
+  }
+
+  .header-searchbar {
+    @include grid($column: 4fr 1fr);
+    min-width: 20rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+
+    input {
+      padding-left: 1rem;
+      border: none;
+    }
+
+    button {
+      background-color: $color-secondary-light;
+      border: none;
+    }
+  }
+}

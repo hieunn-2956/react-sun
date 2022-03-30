@@ -1,0 +1,80 @@
+@import "../../scss/variables.scss";
+@import "../../scss/mixin.scss";
+
+.layout-container {
+  @include grid($sidebar-width 1fr);
+}
+
+.sidebar {
+  background-color: $color-grey-light-1;
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  height: 100%;
+  width: $sidebar-width;
+  padding: 0.5rem;
+  overflow: scroll;
+
+  h5 {
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-container {
+    position: relative;
+    height: 100%;
+  }
+}
+
+.refineby {
+  &-brand,
+  &-type {
+    @include flex($justify: flex-start, $direction: column, $align: flex-start);
+    padding-bottom: 1rem;
+
+    input {
+      cursor: pointer;
+      margin-right: 0.8rem;
+    }
+  }
+
+  &-price {
+    @include flex($justify: flex-start, $direction: column, $align: flex-start);
+
+    p {
+      cursor: pointer;
+      &:hover {
+        color: $color-secondary-light;
+      }
+    }
+
+    .custom-price {
+      @include flex($justify: center, $align: center, $gap: 0.3rem);
+
+      label {
+        @include flex($justify: center, $align: center, $gap: 0.5rem);
+
+        input {
+          height: 1.4rem;
+          width: 3rem;
+        }
+      }
+    }
+  }
+
+  &-star {
+    @include flex($justify: flex-start, $direction: column, $align: flex-start);
+
+    &__item {
+      @include flex($justify: flex-start, $align: center);
+    }
+
+    span {
+      margin-left: 1rem;
+    }
+  }
+}
+
+.content {
+  grid-column: 2 / -1;
+  background-color: aquamarine;
+}
