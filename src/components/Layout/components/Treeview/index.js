@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useContext } from "react";
+import { ProductContext } from "../../../../Provider/products.provider";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import { BsChevronDown, BsChevronRight } from "react-icons/bs";
@@ -54,11 +55,17 @@ const treelist = [
 ];
 
 const Treeview = () => {
+  const { getProductsByCategory } = useContext(ProductContext);
+
   const renderTree = (categories) => {
     let renderList = [];
     for (let category of categories) {
       renderList.push(
-        <TreeItem nodeId={category.title} label={category.title}>
+        <TreeItem
+          nodeId={category.title}
+          label={category.title}
+          onClick={() => getProductsByCategory(category.title)}
+        >
           {category.childrens &&
             category.childrens.length &&
             renderTree(category.childrens)}
