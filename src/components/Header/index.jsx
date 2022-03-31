@@ -9,12 +9,12 @@ export default function Header() {
         <img src='https://kfinancial.com/wp-content/uploads/2019/02/amazon-logo-vector-png-vector-png-free-amazon-logos-705.jpg' />
       </div>
       <h1 className='brand'>Amazing</h1>
-      <from className='header-searchbar' type='submit'>
+      <form className='header-searchbar' type='submit'>
         <input placeholder='Search a product' />
         <button>
           <BsSearch />
         </button>
-      </from>
+      </form>
     </header>
   );
 }

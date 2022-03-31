@@ -1,0 +1,7 @@
+@import "../../scss//variables.scss";
+@import "../../scss//mixin.scss";
+
+.products-container {
+  @include grid($column: repeat(4, 1fr), $col-gap: 2rem, $row-gap: 2rem);
+  padding: 2rem;
+}

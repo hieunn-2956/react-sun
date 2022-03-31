@@ -5,6 +5,7 @@ import { BsStar, BsStarFill } from "react-icons/bs";
 
 import Header from "../Header";
 import Treeview from "./components/Treeview";
+import Rating from "../UI/Rating";
 
 const typeList = [
   "Trend cases",
@@ -73,7 +74,7 @@ export default function Layout(props) {
         {stars.map((star) => {
           return (
             <div className='refineby-star__item'>
-              {renderStar(star)} <span> &amp; Up</span>
+              <Rating count={star} /> <span> &amp; Up</span>
             </div>
           );
         })}
