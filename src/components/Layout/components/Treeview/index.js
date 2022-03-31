@@ -73,7 +73,7 @@ const Treeview = () => {
       aria-label='file system navigator'
       defaultCollapseIcon={<BsChevronDown />}
       defaultExpandIcon={<BsChevronRight />}
-      sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+      sx={{ height: 360, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
     >
       {renderTree(treelist)}
     </TreeView>
