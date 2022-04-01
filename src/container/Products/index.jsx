@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { ProductContext } from "../../Provider/products.provider";
+import PaginationControlled from "../../components/Layout/components/Pagination";
 import Product from "./Product";
 
 import "./style.scss";
@@ -26,6 +27,10 @@ export const Products = (props) => {
   return (
     <Layout sidebar>
       <div className='products-container'>
+        <div class='products-pagination'>
+          <PaginationControlled />
+        </div>
+
         {products && renderProducts(products)}
       </div>
     </Layout>

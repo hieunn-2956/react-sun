@@ -12,6 +12,7 @@ const ProductProvider = ({ children }) => {
   const {
     category,
     products,
+    totalProduct,
     page,
     limit,
     typeList,
@@ -34,10 +35,10 @@ const ProductProvider = ({ children }) => {
         },
       });
       const products = res.data;
-
+      const totalProduct = res.headers["x-total-count"];
       dispatch({
         type: productsConstant.GET_PRODUCTS_BY_CATEGORY,
-        payload: { products, category },
+        payload: { products, category, totalProduct },
       });
       const allData = await axiosInstance.get(`/products`, {
         params: {
@@ -88,7 +89,13 @@ const ProductProvider = ({ children }) => {
     }
   };
 
-  const getProductsByFilter = async ({ category, typeList, brandList }) => {
+  const getProductsByFilter = async ({
+    category,
+    typeList,
+    brandList,
+    rating,
+    priceRange,
+  }) => {
     const typeParams = typeList.map((type) => `&type=${type}`).join(",");
     const brandParams = brandList.map((brand) => `&brand=${brand}`).join(",");
 
@@ -99,13 +106,16 @@ const ProductProvider = ({ children }) => {
           _page: page,
           _limit: limit,
           categories_like: category,
+          ...(rating && { rating }),
+          ...(priceRange && { price_range: priceRange }),
         },
       }
     );
     const products = res.data;
+    const totalProduct = res.headers["x-total-count"];
     dispatch({
       type: productsConstant.GET_PRODUCTS_BY_FILTER,
-      payload: products,
+      payload: { products, totalProduct },
     });
   };
 
@@ -115,7 +125,13 @@ const ProductProvider = ({ children }) => {
       payload: typeList,
     });
 
-    await getProductsByFilter({ category, typeList, brandList });
+    await getProductsByFilter({
+      category,
+      typeList,
+      brandList,
+      priceRange,
+      rating,
+    });
   };
 
   const setBrandCheck = async (brandList) => {
@@ -123,13 +139,26 @@ const ProductProvider = ({ children }) => {
       type: productsConstant.SET_BRANDCHECK,
       payload: brandList,
     });
-    await getProductsByFilter({ category, typeList, brandList });
+    await getProductsByFilter({
+      category,
+      typeList,
+      brandList,
+      priceRange,
+      rating,
+    });
   };
 
   const setRating = async (rating) => {
     await dispatch({
       type: productsConstant.SET_RATING,
       payload: rating,
+    });
+    await getProductsByFilter({
+      category,
+      typeList,
+      brandList,
+      priceRange,
+      rating,
     });
   };
 
@@ -138,6 +167,27 @@ const ProductProvider = ({ children }) => {
       type: productsConstant.SET_PRICERANGE,
       payload: priceRange,
     });
+    await getProductsByFilter({
+      category,
+      typeList,
+      brandList,
+      priceRange,
+      rating,
+    });
+  };
+
+  const setPage = async (pageClick) => {
+    await dispatch({
+      type: productsConstant.SET_PAGE,
+      payload: pageClick,
+    });
+    await getProductsByFilter({
+      category,
+      typeList,
+      brandList,
+      priceRange,
+      rating,
+    });
   };
 
   return (
@@ -145,6 +195,7 @@ const ProductProvider = ({ children }) => {
       value={{
         category,
         products,
+        totalProduct,
         page,
         limit,
         typeList,
@@ -161,6 +212,7 @@ const ProductProvider = ({ children }) => {
         setPriceRange,
         setRating,
         getProductsByFilter,
+        setPage,
       }}
     >
       {children}
