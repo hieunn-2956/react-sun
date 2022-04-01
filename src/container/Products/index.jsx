@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { ProductContext } from "../../Provider/products.provider";
-import axiosInstance from "../../helper/axios";
 import Product from "./Product";
 
 import "./style.scss";
@@ -12,10 +11,10 @@ import "./style.scss";
  **/
 
 export const Products = (props) => {
-  const { products, getProducts } = useContext(ProductContext);
+  const { products, getProductsByCategory } = useContext(ProductContext);
 
   useEffect(() => {
-    getProducts();
+    getProductsByCategory("Audio");
   }, []);
 
   const renderProducts = (list) => {

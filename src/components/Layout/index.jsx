@@ -1,41 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./style.scss";
 import { Container } from "react-bootstrap";
-import { BsStar, BsStarFill } from "react-icons/bs";
+import { ProductContext } from "../../Provider/products.provider";
 
 import Header from "../Header";
 import Treeview from "./components/Treeview";
 import Rating from "../UI/Rating";
 
-const typeList = [
-  "Trend cases",
-  "Ult protection case",
-  "Ink cartridges",
-  "Bussiness cases",
-  "Connectivity",
-];
-const brandList = ["Samsung", "Metra", "HP", "Apple"];
-const priceRangeList = [
-  "< 1",
-  "1 - 80",
-  "80 - 160",
-  "80 - 160",
-  "160 - 240",
-  "240 - 1.820",
-  "1.820 - 3.400",
-  "3.400 - 4.980",
-  "> 4.980",
-];
-const stars = [1, 2, 3, 4];
-
 export default function Layout(props) {
+  const { typeList, setTypeCheck, rating, priceRange } =
+    useContext(ProductContext);
+  const { brandList, setBrandCheck, setRating, setPriceRange } =
+    useContext(ProductContext);
+  const { typeLabels, brandLabels, priceLabels, ratingLabels } =
+    useContext(ProductContext);
+
+  const handleFilterByType = (event) => {
+    let updatedList = [...typeList];
+    const { checked, value } = event.target;
+    if (checked) {
+      updatedList = [...typeList, value];
+    } else {
+      updatedList.splice(typeList.indexOf(value), 1);
+    }
+    setTypeCheck(updatedList);
+  };
+
+  const handleFilterByBrand = (event) => {
+    let updatedList = [...brandList];
+    const { checked, value } = event.target;
+    if (checked) {
+      updatedList = [...brandList, value];
+    } else {
+      updatedList.splice(brandList.indexOf(value), 1);
+    }
+    setBrandCheck(updatedList);
+  };
+
   const renderRefindType = () => {
     return (
       <div className='refineby-type'>
-        <h5>Type</h5>
-        {typeList.map((type) => (
+        <h5 onClick={() => console.log(typeList)}>Type</h5>
+        {typeLabels.map((type) => (
           <label key={type}>
-            <input type='checkbox' />
+            <input type='checkbox' value={type} onChange={handleFilterByType} />
             {type}
           </label>
         ))}
@@ -48,10 +56,14 @@ export default function Layout(props) {
       <div className='refineby-brand'>
         <h5>Brand</h5>
         <input placeholder='Search for other' />
-        {brandList.map((type) => {
+        {brandLabels.map((type) => {
           return (
             <label>
-              <input type='checkbox' />
+              <input
+                type='checkbox'
+                value={type}
+                onChange={handleFilterByBrand}
+              />
               {type}
             </label>
           );
@@ -61,23 +73,20 @@ export default function Layout(props) {
   };
 
   const renderRatings = () => {
-    const renderStar = (count) => (
-      <div>
-        {[...Array(5)].map((_, index) =>
-          index < count ? <BsStarFill /> : <BsStar />
-        )}
-      </div>
-    );
     return (
       <div className='refineby-star'>
         <h5>Ratings</h5>
-        {stars.map((star) => {
-          return (
-            <div className='refineby-star__item'>
-              <Rating count={star} /> <span> &amp; Up</span>
+        {Object.entries(ratingLabels)
+          .reverse()
+          .map((rating) => (
+            <div
+              className='refineby-star__item'
+              onClick={(e) => setRating(rating[0])}
+            >
+              <Rating count={rating[0]} />{" "}
+              <span> &amp; Up {rating[1].count}</span>
             </div>
-          );
-        })}
+          ))}
       </div>
     );
   };
@@ -86,9 +95,9 @@ export default function Layout(props) {
     return (
       <div className='refineby-price'>
         <h5>Prices</h5>
-        {priceRangeList.map((type) => {
+        {priceLabels.map((type) => {
           return (
-            <p>
+            <p onClick={(e) => setPriceRange(type)}>
               <span> &#36; </span> {type}
             </p>
           );

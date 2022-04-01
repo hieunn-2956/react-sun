@@ -6,6 +6,9 @@ header {
   height: 4rem;
   background-color: $color-grey-dark-3;
   overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100vw;
 
   .logo-image {
     height: 100%;
