@@ -55,7 +55,12 @@ const treelist = [
 ];
 
 const Treeview = () => {
-  const { getProductsByCategory } = useContext(ProductContext);
+  const { getProductsByCategory, setPage } = useContext(ProductContext);
+
+  const hanleRenderProductsByCategory = (category) => {
+    getProductsByCategory(category);
+    setPage(1);
+  };
 
   const renderTree = (categories) => {
     let renderList = [];
@@ -64,7 +69,7 @@ const Treeview = () => {
         <TreeItem
           nodeId={category.title}
           label={category.title}
-          onClick={() => getProductsByCategory(category.title)}
+          onClick={() => hanleRenderProductsByCategory(category.title)}
         >
           {category.childrens &&
             category.childrens.length &&

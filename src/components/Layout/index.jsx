@@ -10,7 +10,7 @@ import Rating from "../UI/Rating";
 export default function Layout(props) {
   const { typeList, setTypeCheck, rating, priceRange } =
     useContext(ProductContext);
-  const { brandList, setBrandCheck, setRating, setPriceRange } =
+  const { brandList, setBrandCheck, setRating, setPriceRange, setPage } =
     useContext(ProductContext);
   const { typeLabels, brandLabels, priceLabels, ratingLabels } =
     useContext(ProductContext);
@@ -23,6 +23,7 @@ export default function Layout(props) {
     } else {
       updatedList.splice(typeList.indexOf(value), 1);
     }
+    setPage(1);
     setTypeCheck(updatedList);
   };
 
@@ -34,7 +35,18 @@ export default function Layout(props) {
     } else {
       updatedList.splice(brandList.indexOf(value), 1);
     }
+    setPage(1);
     setBrandCheck(updatedList);
+  };
+
+  const handleFilterRating = (value) => {
+    setPage(1);
+    setRating(value);
+  };
+
+  const handleFilterPriceRange = (value) => {
+    setPage(1);
+    setPriceRange(value);
   };
 
   const renderRefindType = () => {
@@ -78,13 +90,13 @@ export default function Layout(props) {
         <h5>Ratings</h5>
         {Object.entries(ratingLabels)
           .reverse()
-          .map((rating) => (
+          .map((rat) => (
             <div
               className='refineby-star__item'
-              onClick={(e) => setRating(rating[0])}
+              onClick={(e) => handleFilterRating(rat[0])}
             >
-              <Rating count={rating[0]} />{" "}
-              <span> &amp; Up {rating[1].count}</span>
+              <Rating count={rat[0]} />
+              <span> &amp; Up {rat[1].count}</span>
             </div>
           ))}
       </div>
@@ -97,7 +109,7 @@ export default function Layout(props) {
         <h5>Prices</h5>
         {priceLabels.map((type) => {
           return (
-            <p onClick={(e) => setPriceRange(type)}>
+            <p onClick={(e) => handleFilterPriceRange(type)}>
               <span> &#36; </span> {type}
             </p>
           );

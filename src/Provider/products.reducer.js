@@ -3,6 +3,7 @@ import productsConstant from "./products.constant";
 export const initialState = {
   category: "",
   products: [],
+  totalProduct: 0,
   page: 1,
   limit: 12,
   typeList: [],
@@ -24,11 +25,13 @@ const productsReducer = (state, action) => {
         ...state,
         products: action.payload.products,
         category: action.payload.category,
+        totalProduct: action.payload.totalProduct,
       };
     case productsConstant.GET_PRODUCTS_BY_FILTER:
       return {
         ...state,
-        products: action.payload,
+        products: action.payload.products,
+        totalProduct: action.payload.totalProduct,
       };
 
     case productsConstant.SET_TYPECHECK:
@@ -48,6 +51,8 @@ const productsReducer = (state, action) => {
         priceLabels: action.payload.priceRange,
         ratingLabels: action.payload.ratingList,
       };
+    case productsConstant.SET_PAGE:
+      return { ...state, page: action.payload };
     default:
       return state;
   }

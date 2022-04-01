@@ -3,5 +3,10 @@
 
 .products-container {
   @include grid($column: repeat(4, 1fr), $col-gap: 2rem, $row-gap: 2rem);
+  justify-items: center;
   padding: 2rem;
+
+  .products-pagination {
+    grid-column: 1 /-1;
+  }
 }

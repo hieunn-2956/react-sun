@@ -9,4 +9,5 @@ export default {
   SET_RATING: "SET_RATING",
 
   SET_LABELS: "SET_LABELS",
+  SET_PAGE: "SET_PAGE",
 };
