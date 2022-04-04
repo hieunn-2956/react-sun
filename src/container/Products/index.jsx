@@ -16,7 +16,7 @@ export const Products = (props) => {
   const { products } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(getProductsRequest("Audio"));
+    dispatch(getProductsRequest("Appliances"));
   }, []);
 
   const renderProducts = (list) => {

@@ -2,6 +2,8 @@ import * as React from "react";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import { BsChevronDown, BsChevronRight } from "react-icons/bs";
+import { useSelector, useDispatch } from "react-redux";
+import { getProductsRequest } from "../../../../actions";
 
 const treelist = [
   {
@@ -54,11 +56,20 @@ const treelist = [
 ];
 
 const Treeview = () => {
+  const dispatch = useDispatch();
+  const handleGetProductsByCategory = (value) => {
+    dispatch(getProductsRequest(value));
+  };
+
   const renderTree = (categories) => {
     let renderList = [];
     for (let category of categories) {
       renderList.push(
-        <TreeItem nodeId={category.title} label={category.title}>
+        <TreeItem
+          nodeId={category.title}
+          label={category.title}
+          onClick={() => handleGetProductsByCategory(category.title)}
+        >
           {category.childrens &&
             category.childrens.length &&
             renderTree(category.childrens)}
