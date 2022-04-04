@@ -2,10 +2,12 @@ import productsConstant from "./products.constant";
 
 export const initialState = {
   category: "",
+  queryString: "",
   products: [],
   totalProduct: 0,
   page: 1,
   limit: 12,
+  sortBy: "",
   typeList: [],
   brandList: [],
   priceRange: "",
@@ -42,6 +44,8 @@ const productsReducer = (state, action) => {
       return { ...state, priceRange: action.payload };
     case productsConstant.SET_RATING:
       return { ...state, rating: action.payload };
+    case productsConstant.SET_SEARCHING:
+      return { ...state, queryString: action.payload };
 
     case productsConstant.SET_LABELS:
       return {
@@ -52,7 +56,9 @@ const productsReducer = (state, action) => {
         ratingLabels: action.payload.ratingList,
       };
     case productsConstant.SET_PAGE:
-      return { ...state, page: action.payload };
+      return { ...state, page: action.payload.page };
+    case productsConstant.SET_SORTBY:
+      return { ...state, sortBy: action.payload };
     default:
       return state;
   }

@@ -40,13 +40,21 @@ export default function Layout(props) {
   };
 
   const handleFilterRating = (value) => {
-    setPage(1);
-    setRating(value);
+    if (value != rating) {
+      setPage(1);
+      setRating(value);
+    } else {
+      setRating("");
+    }
   };
 
   const handleFilterPriceRange = (value) => {
-    setPage(1);
-    setPriceRange(value);
+    if (value != priceRange) {
+      setPage(1);
+      setPriceRange(value);
+    } else {
+      setPriceRange("");
+    }
   };
 
   const renderRefindType = () => {
@@ -96,7 +104,9 @@ export default function Layout(props) {
               onClick={(e) => handleFilterRating(rat[0])}
             >
               <Rating count={rat[0]} />
-              <span> &amp; Up {rat[1].count}</span>
+              <span className={rat[0] == rating ? "active" : null}>
+                &amp; Up {rat[1].count}
+              </span>
             </div>
           ))}
       </div>
@@ -109,7 +119,10 @@ export default function Layout(props) {
         <h5>Prices</h5>
         {priceLabels.map((type) => {
           return (
-            <p onClick={(e) => handleFilterPriceRange(type)}>
+            <p
+              className={type == priceRange ? "active" : null}
+              onClick={(e) => handleFilterPriceRange(type)}
+            >
               <span> &#36; </span> {type}
             </p>
           );

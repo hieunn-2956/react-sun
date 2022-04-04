@@ -12,7 +12,9 @@ import "./style.scss";
  **/
 
 export const Products = (props) => {
-  const { products, getProductsByCategory } = useContext(ProductContext);
+  const { products, getProductsByCategory, setSortBy } =
+    useContext(ProductContext);
+  console.log(products);
 
   useEffect(() => {
     getProductsByCategory("Audio");
@@ -24,9 +26,23 @@ export const Products = (props) => {
     ));
   };
 
+  const hanleSortBy = (value) => {
+    setSortBy(value);
+  };
+
   return (
     <Layout sidebar>
       <div className='products-container'>
+        <div className='products-sort'>
+          <label>
+            SortBy:
+            <select onChange={(e) => hanleSortBy(e.target.value)}>
+              <option value=''>Featured</option>
+              <option value='asc'>Price asc</option>
+              <option value='desc'>Price desc</option>
+            </select>
+          </label>
+        </div>
         <div class='products-pagination'>
           <PaginationControlled />
         </div>
