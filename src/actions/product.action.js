@@ -2,12 +2,13 @@ import {
   GET_PRODUCTS_REQUEST,
   GET_PRODUCTS_SUCCESS,
   GET_PRODUCTS_FAILURE,
+  SET_LABELS,
 } from "./constant";
 
-export const getProductsSuccess = (products) => {
+export const getProductsSuccess = (productsPayload) => {
   return {
     type: GET_PRODUCTS_SUCCESS,
-    payload: products,
+    payload: productsPayload,
   };
 };
 
@@ -22,5 +23,12 @@ export const getProductsRequest = (category) => {
   return {
     type: GET_PRODUCTS_REQUEST,
     payload: category,
+  };
+};
+
+export const setLabels = (label) => {
+  return {
+    type: SET_LABELS,
+    payload: label,
   };
 };

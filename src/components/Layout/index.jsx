@@ -2,37 +2,22 @@ import React, { useState } from "react";
 import "./style.scss";
 import { Container } from "react-bootstrap";
 import { BsStar, BsStarFill } from "react-icons/bs";
+import Rating from "../UI/Rating";
 
 import Header from "../Header";
 import Treeview from "./components/Treeview";
-
-const typeList = [
-  "Trend cases",
-  "Ult protection case",
-  "Ink cartridges",
-  "Bussiness cases",
-  "Connectivity",
-];
-const brandList = ["Samsung", "Metra", "HP", "Apple"];
-const priceRangeList = [
-  "< 1",
-  "1 - 80",
-  "80 - 160",
-  "80 - 160",
-  "160 - 240",
-  "240 - 1.820",
-  "1.820 - 3.400",
-  "3.400 - 4.980",
-  "> 4.980",
-];
-const stars = [1, 2, 3, 4];
+import { useSelector, dispatch } from "react-redux";
 
 export default function Layout(props) {
-  const renderRefindType = () => {
+  const { typeLabels, brandLabels, priceLabels, ratingLabels } = useSelector(
+    (state) => state.product
+  );
+
+  const renderRefindType = (labels) => {
     return (
       <div className='refineby-type'>
         <h5>Type</h5>
-        {typeList.map((type) => (
+        {labels.map((type) => (
           <label key={type}>
             <input type='checkbox' />
             {type}
@@ -42,12 +27,12 @@ export default function Layout(props) {
     );
   };
 
-  const renderBrands = () => {
+  const renderBrands = (labels) => {
     return (
       <div className='refineby-brand'>
         <h5>Brand</h5>
         <input placeholder='Search for other' />
-        {brandList.map((type) => {
+        {labels.map((type) => {
           return (
             <label>
               <input type='checkbox' />
@@ -59,33 +44,27 @@ export default function Layout(props) {
     );
   };
 
-  const renderRatings = () => {
-    const renderStar = (count) => (
-      <div>
-        {[...Array(5)].map((_, index) =>
-          index < count ? <BsStarFill /> : <BsStar />
-        )}
-      </div>
-    );
+  const renderRatings = (labels) => {
     return (
       <div className='refineby-star'>
         <h5>Ratings</h5>
-        {stars.map((star) => {
-          return (
+        {Object.entries(labels)
+          .reverse()
+          .map((rat) => (
             <div className='refineby-star__item'>
-              {renderStar(star)} <span> &amp; Up</span>
+              <Rating count={rat[0]} />
+              <span>&amp; Up {rat[1].count}</span>
             </div>
-          );
-        })}
+          ))}
       </div>
     );
   };
 
-  const renderPricesRange = () => {
+  const renderPricesRange = (labels) => {
     return (
       <div className='refineby-price'>
         <h5>Prices</h5>
-        {priceRangeList.map((type) => {
+        {labels.map((type) => {
           return (
             <p>
               <span> &#36; </span> {type}
@@ -117,10 +96,10 @@ export default function Layout(props) {
                 <div className='refineby'>
                   <Treeview />
                   <h4>Refine by</h4>
-                  {renderRefindType()}
-                  {renderBrands()}
-                  {renderRatings()}
-                  {renderPricesRange()}
+                  {renderRefindType(typeLabels)}
+                  {renderBrands(brandLabels)}
+                  {renderRatings(ratingLabels)}
+                  {renderPricesRange(priceLabels)}
                 </div>
               </div>
             </nav>

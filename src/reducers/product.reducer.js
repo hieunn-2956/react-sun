@@ -1,7 +1,9 @@
+import { StaticTimePicker } from "@mui/lab";
 import {
   GET_PRODUCTS_SUCCESS,
   GET_PRODUCTS_FAILURE,
   GET_PRODUCTS_REQUEST,
+  SET_LABELS,
 } from "../actions/constant";
 
 export const initialState = {
@@ -25,22 +27,35 @@ export const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case GET_PRODUCTS_REQUEST:
-      return (state = {
+      return {
         ...state,
         loading: true,
-      });
+      };
     case GET_PRODUCTS_SUCCESS:
-      return (state = {
+      const { products, category } = action.payload;
+      return {
         ...state,
-        products: action.payload.products,
+        products,
+        category,
         loading: false,
-      });
+      };
     case GET_PRODUCTS_FAILURE:
-      return (state = {
+      return {
         ...state,
         error: action.payload.error,
         loading: false,
-      });
+      };
+    case SET_LABELS: {
+      const { brandLabels, typeLabels, priceLabels, ratingLabels } =
+        action.payload;
+      return {
+        ...state,
+        brandLabels,
+        typeLabels,
+        priceLabels,
+        ratingLabels,
+      };
+    }
     default:
       return state;
   }
