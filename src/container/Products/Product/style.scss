@@ -1,0 +1,21 @@
+@import "../../../scss/variables.scss";
+@import "../../../scss/mixin.scss";
+
+.product {
+  border: 1px solid $color-grey-light-2;
+  padding: 1rem;
+
+  img {
+    height: 10rem;
+    width: 75%;
+    object-fit: cover;
+  }
+
+  svg {
+    fill: $color-secondary-light;
+  }
+
+  &-infor {
+    @include flex($justify: space-between, $align: center);
+  }
+}
