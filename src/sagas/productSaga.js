@@ -9,12 +9,24 @@ import {
 import {
   GET_PRODUCTS_REQUEST,
   GET_PRODUCTS_SUCCESS,
+  SET_TYPE_CHECK_REQUEST,
+  SET_BRAND_CHECK_REQUEST,
+  SET_RATING_CHECK_REQUEST,
+  SET_PRICERANGE_CHECK_REQUEST,
 } from "../actions/constant";
-import { getProductsSuccess, getProductsFailure, setLabels } from "../actions";
+import {
+  getProductsSuccess,
+  getProductsFailure,
+  setLabels,
+  setTypeCheckSuccess,
+  setBrandCheckSuccess,
+  setRatingCheckSuccess,
+  setPriceRangeCheckSuccess,
+} from "../actions";
 import { initialState } from "../reducers/product.reducer";
 import axiosInstance from "../helper/axios";
 
-const getProducts = async (category) => {
+const getProducts = async ({ category }) => {
   const response = await axiosInstance.get(`/products`, {
     params: {
       _page: initialState.page,
@@ -73,9 +85,9 @@ const getLabels = (list) => {
   };
 };
 
-export function* setLabelsByCategory(allData) {
+export function* setLabelsByCategory({ payload }) {
   try {
-    const allProducts = yield getAllProducts("Audio");
+    const allProducts = yield getAllProducts(payload.category);
     const labels = yield getLabels(allProducts.products);
     yield put(setLabels(labels));
   } catch (err) {
@@ -83,13 +95,30 @@ export function* setLabelsByCategory(allData) {
   }
 }
 
-export function* getProductsByCategory({ payload: category }) {
+export function* getProductsByCategory({ payload }) {
+  const { category } = payload;
   try {
-    const products = yield getProducts(category);
+    const products = yield getProducts({ category });
     yield put(getProductsSuccess({ products, category }));
   } catch (error) {
     yield put(getProductsFailure(error));
   }
+}
+
+export function* filterProductsByType({ payload: typeList }) {
+  yield put(setTypeCheckSuccess(typeList));
+}
+
+export function* filterProductsByBrand({ payload: brandList }) {
+  yield put(setBrandCheckSuccess(brandList));
+}
+
+export function* filterProductsByRating({ payload: rating }) {
+  yield put(setRatingCheckSuccess(rating));
+}
+
+export function* filterProductsByPriceRange({ payload: priceRange }) {
+  yield put(setPriceRangeCheckSuccess(priceRange));
 }
 
 export function* onLoadingProducts() {
@@ -97,6 +126,28 @@ export function* onLoadingProducts() {
   yield takeEvery(GET_PRODUCTS_SUCCESS, setLabelsByCategory);
 }
 
+export function* onSetType() {
+  yield takeLatest(SET_TYPE_CHECK_REQUEST, filterProductsByType);
+}
+
+export function* onSetBrand() {
+  yield takeLatest(SET_BRAND_CHECK_REQUEST, filterProductsByBrand);
+}
+
+export function* onSetRating() {
+  yield takeLatest(SET_RATING_CHECK_REQUEST, filterProductsByRating);
+}
+
+export function* onSetPriceRange() {
+  yield takeLatest(SET_PRICERANGE_CHECK_REQUEST, filterProductsByPriceRange);
+}
+
 export function* productSaga() {
-  yield all([call(onLoadingProducts)]);
+  yield all([
+    call(onLoadingProducts),
+    call(onSetType),
+    call(onSetBrand),
+    call(onSetRating),
+    call(onSetPriceRange),
+  ]);
 }

@@ -6,12 +6,64 @@ import Rating from "../UI/Rating";
 
 import Header from "../Header";
 import Treeview from "./components/Treeview";
-import { useSelector, dispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setTypeCheckRequest,
+  setBrandCheck,
+  setPriceRangeCheck,
+  setRatingCheck,
+  setBrandCheckRequest,
+  setRatingCheckRequest,
+  setPriceRangeCheckRequest,
+} from "../../actions";
 
 export default function Layout(props) {
+  const dispatch = useDispatch();
   const { typeLabels, brandLabels, priceLabels, ratingLabels } = useSelector(
     (state) => state.product
   );
+  const { typeList, brandList, priceRange, rating } = useSelector(
+    (state) => state.product
+  );
+  console.log(typeList, brandList, priceRange, rating);
+
+  const handleFilterByType = (event) => {
+    let updatedList = [...typeList];
+    const { checked, value } = event.target;
+    if (checked) {
+      updatedList = [...typeList, value];
+    } else {
+      updatedList.splice(typeList.indexOf(value), 1);
+    }
+    dispatch(setTypeCheckRequest(updatedList));
+  };
+
+  const handleFilterByBrand = (event) => {
+    let updatedList = [...brandList];
+    const { checked, value } = event.target;
+    if (checked) {
+      updatedList = [...brandList, value];
+    } else {
+      updatedList.splice(brandList.indexOf(value), 1);
+    }
+    dispatch(setBrandCheckRequest(updatedList));
+  };
+
+  const handleFilterRating = (value) => {
+    if (value != rating) {
+      dispatch(setRatingCheckRequest(value));
+    } else {
+      dispatch(setRatingCheckRequest(""));
+    }
+  };
+
+  const handleFilterPriceRange = (value) => {
+    if (value != priceRange) {
+      dispatch(setPriceRangeCheckRequest(value));
+    } else {
+      dispatch(setPriceRangeCheckRequest(""));
+    }
+  };
 
   const renderRefindType = (labels) => {
     return (
@@ -19,7 +71,7 @@ export default function Layout(props) {
         <h5>Type</h5>
         {labels.map((type) => (
           <label key={type}>
-            <input type='checkbox' />
+            <input type='checkbox' value={type} onChange={handleFilterByType} />
             {type}
           </label>
         ))}
@@ -31,15 +83,16 @@ export default function Layout(props) {
     return (
       <div className='refineby-brand'>
         <h5>Brand</h5>
-        <input placeholder='Search for other' />
-        {labels.map((type) => {
-          return (
-            <label>
-              <input type='checkbox' />
-              {type}
-            </label>
-          );
-        })}
+        {labels.map((type) => (
+          <label key={type}>
+            <input
+              type='checkbox'
+              value={type}
+              onChange={handleFilterByBrand}
+            />
+            {type}
+          </label>
+        ))}
       </div>
     );
   };
@@ -51,9 +104,14 @@ export default function Layout(props) {
         {Object.entries(labels)
           .reverse()
           .map((rat) => (
-            <div className='refineby-star__item'>
+            <div
+              className='refineby-star__item'
+              onClick={(e) => handleFilterRating(rat[0])}
+            >
               <Rating count={rat[0]} />
-              <span>&amp; Up {rat[1].count}</span>
+              <span className={rat[0] == rating ? "active" : null}>
+                &amp; Up {rat[1].count}
+              </span>
             </div>
           ))}
       </div>
@@ -66,7 +124,7 @@ export default function Layout(props) {
         <h5>Prices</h5>
         {labels.map((type) => {
           return (
-            <p>
+            <p onClick={(e) => handleFilterPriceRange(type)}>
               <span> &#36; </span> {type}
             </p>
           );
