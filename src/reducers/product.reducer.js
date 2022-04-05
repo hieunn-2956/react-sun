@@ -4,8 +4,6 @@ import {
   GET_PRODUCTS_FAILURE,
   GET_PRODUCTS_REQUEST,
   SET_LABELS,
-  SET_RATING_CHECK,
-  SET_PRICERANGE_CHECK,
   SET_TYPE_CHECK_REQUEST,
   SET_TYPE_CHECK_SUCCESS,
   SET_BRAND_CHECK_REQUEST,
@@ -14,6 +12,10 @@ import {
   SET_RATING_CHECK_SUCCESS,
   SET_PRICERANGE_CHECK_REQUEST,
   SET_PRICERANGE_CHECK_SUCCESS,
+  SET_PAGE_REQUEST,
+  SET_PAGE_SUCCESS,
+  SET_SORT_REQUEST,
+  SET_SORT_SUCCESS,
 } from "../actions/constant";
 
 export const initialState = {
@@ -26,6 +28,7 @@ export const initialState = {
   brandList: [],
   priceRange: "",
   rating: 0,
+  sortBy: "",
   typeLabels: [],
   brandLabels: [],
   priceLabels: [],
@@ -42,12 +45,13 @@ export default (state = initialState, action) => {
         loading: true,
       };
     case GET_PRODUCTS_SUCCESS:
-      const { products, category } = action.payload;
+      const { products, category, totalProduct } = action.payload;
       console.log(category);
       return {
         ...state,
         products,
         category,
+        totalProduct,
         loading: false,
       };
     case GET_PRODUCTS_FAILURE:
@@ -76,6 +80,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         typeList: action.payload,
+        page: 1,
       };
 
     case SET_BRAND_CHECK_REQUEST:
@@ -86,6 +91,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         brandList: action.payload,
+        page: 1,
       };
 
     case SET_RATING_CHECK_REQUEST:
@@ -96,6 +102,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         rating: action.payload,
+        page: 1,
       };
 
     case SET_PRICERANGE_CHECK_REQUEST:
@@ -107,6 +114,29 @@ export default (state = initialState, action) => {
       return {
         ...state,
         priceRange: action.payload,
+        page: 1,
+      };
+
+    case SET_PAGE_REQUEST:
+      return {
+        ...state,
+      };
+
+    case SET_PAGE_SUCCESS:
+      return {
+        ...state,
+        page: action.payload,
+      };
+
+    case SET_SORT_REQUEST:
+      return {
+        ...state,
+      };
+
+    case SET_SORT_SUCCESS:
+      return {
+        ...state,
+        sortBy: action.payload,
       };
 
     default:

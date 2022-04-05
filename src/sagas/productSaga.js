@@ -17,6 +17,10 @@ import {
   SET_RATING_CHECK_SUCCESS,
   SET_PRICERANGE_CHECK_SUCCESS,
   SET_BRAND_CHECK_SUCCESS,
+  SET_PAGE_REQUEST,
+  SET_PAGE_SUCCESS,
+  SET_SORT_REQUEST,
+  SET_SORT_SUCCESS,
 } from "../actions/constant";
 import {
   getProductsSuccess,
@@ -26,6 +30,8 @@ import {
   setBrandCheckSuccess,
   setRatingCheckSuccess,
   setPriceRangeCheckSuccess,
+  setPageSuccess,
+  setSortSuccess,
 } from "../actions";
 import { initialState } from "../reducers/product.reducer";
 import axiosInstance from "../helper/axios";
@@ -61,7 +67,8 @@ const getProducts = async ({
       },
     }
   );
-  return response.data;
+  const totalProduct = response.headers["x-total-count"];
+  return { products: response.data, totalProduct };
 };
 
 const getAllProducts = async (category) => {
@@ -129,17 +136,19 @@ export function* getProductsByCategory({ payload }) {
 
   try {
     if (newCategory) {
-      const products = yield getProducts({
+      const { products, totalProduct } = yield getProducts({
         category: newCategory,
         ...rest,
       });
-      yield put(getProductsSuccess({ products, category: newCategory }));
+      yield put(
+        getProductsSuccess({ products, category: newCategory, totalProduct })
+      );
     } else {
-      const products = yield getProducts({
+      const { products, totalProduct } = yield getProducts({
         category,
         ...rest,
       });
-      yield put(getProductsSuccess({ products, category }));
+      yield put(getProductsSuccess({ products, category, totalProduct }));
     }
   } catch (error) {
     yield put(getProductsFailure(error));
@@ -160,6 +169,14 @@ export function* filterProductsByRating({ payload: rating }) {
 
 export function* filterProductsByPriceRange({ payload: priceRange }) {
   yield put(setPriceRangeCheckSuccess(priceRange));
+}
+
+export function* getProductsByPage({ payload: page }) {
+  yield put(setPageSuccess(page));
+}
+
+export function* getProductsBySort({ payload: sortBy }) {
+  yield put(setSortSuccess(sortBy));
 }
 
 export function* onLoadingProducts() {
@@ -187,6 +204,16 @@ export function* onSetPriceRange() {
   yield takeEvery(SET_PRICERANGE_CHECK_SUCCESS, getProductsByCategory);
 }
 
+export function* onSetPage() {
+  yield takeLatest(SET_PAGE_REQUEST, getProductsByPage);
+  yield takeEvery(SET_PAGE_SUCCESS, getProductsByCategory);
+}
+
+export function* onSetSort() {
+  yield takeLatest(SET_SORT_REQUEST, getProductsBySort);
+  yield takeEvery(SET_SORT_SUCCESS, getProductsByCategory);
+}
+
 export function* productSaga() {
   yield all([
     call(onLoadingProducts),
@@ -194,5 +221,7 @@ export function* productSaga() {
     call(onSetBrand),
     call(onSetRating),
     call(onSetPriceRange),
+    call(onSetPage),
+    call(onSetSort),
   ]);
 }

@@ -3,8 +3,6 @@ import {
   GET_PRODUCTS_SUCCESS,
   GET_PRODUCTS_FAILURE,
   SET_LABELS,
-  SET_PRICERANGE_CHECK,
-  SET_RATING_CHECK,
   SET_TYPE_CHECK_REQUEST,
   SET_TYPE_CHECK_SUCCESS,
   SET_BRAND_CHECK_REQUEST,
@@ -13,6 +11,10 @@ import {
   SET_RATING_CHECK_SUCCESS,
   SET_PRICERANGE_CHECK_REQUEST,
   SET_PRICERANGE_CHECK_SUCCESS,
+  SET_PAGE_REQUEST,
+  SET_PAGE_SUCCESS,
+  SET_SORT_REQUEST,
+  SET_SORT_SUCCESS,
 } from "./constant";
 
 export const getProductsSuccess = (productsPayload) => {
@@ -96,5 +98,33 @@ export const setPriceRangeCheckSuccess = (priceRange) => {
   return {
     type: SET_PRICERANGE_CHECK_SUCCESS,
     payload: priceRange,
+  };
+};
+
+export const setPageRequest = (page) => {
+  return {
+    type: SET_PAGE_REQUEST,
+    payload: page,
+  };
+};
+
+export const setPageSuccess = (page) => {
+  return {
+    type: SET_PAGE_SUCCESS,
+    payload: page,
+  };
+};
+
+export const setSortRequest = (sort) => {
+  return {
+    type: SET_SORT_REQUEST,
+    payload: sort,
+  };
+};
+
+export const setSortSuccess = (sort) => {
+  return {
+    type: SET_SORT_SUCCESS,
+    payload: sort,
   };
 };
