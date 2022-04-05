@@ -16,6 +16,10 @@ import {
   SET_PAGE_SUCCESS,
   SET_SORT_REQUEST,
   SET_SORT_SUCCESS,
+  SET_SEARCH_REQUEST,
+  SET_SEARCH_SUCCESS,
+  SET_CUSTOMPRICE_SUCCESS,
+  SET_CUSTOMPRICE_REQUEST,
 } from "../actions/constant";
 
 export const initialState = {
@@ -29,6 +33,7 @@ export const initialState = {
   priceRange: "",
   rating: 0,
   sortBy: "",
+  queryString: "",
   typeLabels: [],
   brandLabels: [],
   priceLabels: [],
@@ -115,6 +120,8 @@ export default (state = initialState, action) => {
         ...state,
         priceRange: action.payload,
         page: 1,
+        lowPrice: "",
+        highPrice: "",
       };
 
     case SET_PAGE_REQUEST:
@@ -137,6 +144,33 @@ export default (state = initialState, action) => {
       return {
         ...state,
         sortBy: action.payload,
+      };
+
+    case SET_SEARCH_REQUEST:
+      return {
+        ...state,
+      };
+
+    case SET_SEARCH_SUCCESS:
+      return {
+        ...state,
+        queryString: action.payload,
+        page: 1,
+      };
+
+    case SET_CUSTOMPRICE_REQUEST:
+      return {
+        ...state,
+      };
+
+    case SET_CUSTOMPRICE_SUCCESS:
+      const { lowPrice, highPrice } = action.payload;
+      return {
+        ...state,
+        lowPrice,
+        highPrice,
+        priceRange: "",
+        page: 1,
       };
 
     default:

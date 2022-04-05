@@ -9,7 +9,7 @@
 .products-pagination {
   @include flex($justify: center, $align: center);
 }
-.products-sort {
-  @include flex($justify: flex-end, $align: center);
-  margin-right: 2rem;
+.products-infor {
+  @include flex($justify: space-between, $align: center);
+  padding: 0 2rem;
 }

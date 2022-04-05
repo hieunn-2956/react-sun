@@ -14,7 +14,9 @@ import "./style.scss";
 
 export const Products = (props) => {
   const dispatch = useDispatch();
-  const { products, category } = useSelector((state) => state.product);
+  const { products, category, totalProduct } = useSelector(
+    (state) => state.product
+  );
 
   useEffect(() => {
     dispatch(getProductsRequest({ newCategory: category }));
@@ -32,7 +34,8 @@ export const Products = (props) => {
 
   return (
     <Layout sidebar>
-      <div className='products-sort'>
+      <div className='products-infor'>
+        <p>{totalProduct} results found</p>
         <label>
           SortBy:
           <select onChange={(e) => hanleSortBy(e.target.value)}>

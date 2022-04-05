@@ -15,6 +15,12 @@ import {
   SET_PAGE_SUCCESS,
   SET_SORT_REQUEST,
   SET_SORT_SUCCESS,
+  SET_SEARCH_SUCCESS,
+  SET_SEARCH_REQUEST,
+  SET_PRICELOW_REQUEST,
+  SET_PRICELOW_SUCCESS,
+  SET_CUSTOMPRICE_REQUEST,
+  SET_CUSTOMPRICE_SUCCESS,
 } from "./constant";
 
 export const getProductsSuccess = (productsPayload) => {
@@ -126,5 +132,33 @@ export const setSortSuccess = (sort) => {
   return {
     type: SET_SORT_SUCCESS,
     payload: sort,
+  };
+};
+
+export const setSearchRequest = (queryString) => {
+  return {
+    type: SET_SEARCH_REQUEST,
+    payload: queryString,
+  };
+};
+
+export const setSearchSuccess = (queryString) => {
+  return {
+    type: SET_SEARCH_SUCCESS,
+    payload: queryString,
+  };
+};
+
+export const setCustomPriceRequest = (value) => {
+  return {
+    type: SET_CUSTOMPRICE_REQUEST,
+    payload: value,
+  };
+};
+
+export const setCustomPriceSuccess = (value) => {
+  return {
+    type: SET_CUSTOMPRICE_SUCCESS,
+    payload: value,
   };
 };

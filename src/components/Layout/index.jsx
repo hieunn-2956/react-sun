@@ -9,23 +9,24 @@ import Treeview from "./components/Treeview";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setTypeCheckRequest,
-  setBrandCheck,
-  setPriceRangeCheck,
-  setRatingCheck,
   setBrandCheckRequest,
   setRatingCheckRequest,
   setPriceRangeCheckRequest,
+  setCustomPriceRequest,
 } from "../../actions";
+import BrandAutocomplete from "./components/AutoComplete";
 
 export default function Layout(props) {
   const dispatch = useDispatch();
+  const [lowPrice, setLowPrice] = useState(0);
+  const [highPrice, setHighPrice] = useState(0);
   const { typeLabels, brandLabels, priceLabels, ratingLabels } = useSelector(
     (state) => state.product
   );
   const { typeList, brandList, priceRange, rating } = useSelector(
     (state) => state.product
   );
-  console.log(typeList, brandList, priceRange, rating);
+  console.log(typeLabels, brandLabels);
 
   const handleFilterByType = (event) => {
     let updatedList = [...typeList];
@@ -65,14 +66,22 @@ export default function Layout(props) {
     }
   };
 
+  const handleSearchByCustomPrice = () => {
+    dispatch(setCustomPriceRequest({ lowPrice, highPrice }));
+  };
+
   const renderRefindType = (labels) => {
     return (
       <div className='refineby-type'>
         <h5>Type</h5>
         {labels.map((type) => (
-          <label key={type}>
-            <input type='checkbox' value={type} onChange={handleFilterByType} />
-            {type}
+          <label key={type.key}>
+            <input
+              type='checkbox'
+              value={type.key}
+              onChange={handleFilterByType}
+            />
+            {type.key}({`${type.value.count}`})
           </label>
         ))}
       </div>
@@ -83,14 +92,15 @@ export default function Layout(props) {
     return (
       <div className='refineby-brand'>
         <h5>Brand</h5>
+        <BrandAutocomplete data={brandLabels} />
         {labels.map((type) => (
-          <label key={type}>
+          <label key={type.key}>
             <input
               type='checkbox'
-              value={type}
+              value={type.key}
               onChange={handleFilterByBrand}
             />
-            {type}
+            {type.key}({`${type.value.count}`})
           </label>
         ))}
       </div>
@@ -132,14 +142,26 @@ export default function Layout(props) {
         <div className='custom-price'>
           <label>
             &#36;
-            <input type='text' />
+            <input
+              type='number'
+              onChange={(e) => setLowPrice(e.target.value)}
+            />
           </label>
           <p>to</p>
           <label>
             &#36;
-            <input type='text' />
+            <input
+              type='number'
+              onChange={(e) => setHighPrice(e.target.value)}
+            />
           </label>
         </div>
+        <button
+          className='custom-price__btn'
+          onClick={handleSearchByCustomPrice}
+        >
+          Go
+        </button>
       </div>
     );
   };
@@ -154,10 +176,10 @@ export default function Layout(props) {
                 <div className='refineby'>
                   <Treeview />
                   <h4>Refine by</h4>
-                  {renderRefindType(typeLabels)}
-                  {renderBrands(brandLabels)}
+                  {renderRefindType(typeLabels.slice(0, 5))}
+                  {renderBrands(brandLabels.slice(0, 5))}
                   {renderRatings(ratingLabels)}
-                  {renderPricesRange(priceLabels)}
+                  {priceLabels && renderPricesRange(priceLabels)}
                 </div>
               </div>
             </nav>

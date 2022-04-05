@@ -21,6 +21,10 @@ import {
   SET_PAGE_SUCCESS,
   SET_SORT_REQUEST,
   SET_SORT_SUCCESS,
+  SET_SEARCH_REQUEST,
+  SET_SEARCH_SUCCESS,
+  SET_CUSTOMPRICE_REQUEST,
+  SET_CUSTOMPRICE_SUCCESS,
 } from "../actions/constant";
 import {
   getProductsSuccess,
@@ -32,6 +36,8 @@ import {
   setPriceRangeCheckSuccess,
   setPageSuccess,
   setSortSuccess,
+  setSearchSuccess,
+  setCustomPriceSuccess,
 } from "../actions";
 import { initialState } from "../reducers/product.reducer";
 import axiosInstance from "../helper/axios";
@@ -47,6 +53,8 @@ const getProducts = async ({
   sortBy,
   queryString,
   page,
+  lowPrice,
+  highPrice,
 }) => {
   const typeParams =
     typeList && typeList.map((type) => `&type=${type}`).join("");
@@ -58,12 +66,14 @@ const getProducts = async ({
       params: {
         _page: page,
         _limit: initialState.limit,
-        categories_like: category,
+        ...(category && { categories_like: category }),
         ...(rating && { rating }),
         ...(priceRange && { price_range: priceRange }),
         ...(sortBy && { _sort: "price" }),
         ...(sortBy && { _order: sortBy }),
         ...(queryString && { name_like: queryString }),
+        ...(lowPrice && { price_gte: lowPrice }),
+        ...(highPrice && { price_lte: highPrice }),
       },
     }
   );
@@ -81,8 +91,10 @@ const getAllProducts = async (category) => {
 };
 
 const getLabels = (list) => {
-  let typeListLabel = [];
-  let brandListLabel = [];
+  let typeListLabel = {};
+  let typeListArray = [];
+  let brandListLabel = {};
+  let brandListArray = [];
   let priceRange = [];
   let ratingList = {
     1: { count: 0 },
@@ -92,15 +104,10 @@ const getLabels = (list) => {
     5: { count: 0 },
   };
   list.map((data) => {
-    if (!typeListLabel.includes(data.type)) {
-      typeListLabel.push(data.type);
-    }
-    if (!brandListLabel.includes(data.brand)) {
-      brandListLabel.push(data.brand);
-    }
     if (!priceRange.includes(data.price_range)) {
       priceRange.push(data.price_range);
     }
+    // RATING
     let rating = data.rating;
     let tempRatingCount = ratingList[rating];
     if (tempRatingCount) {
@@ -108,9 +115,39 @@ const getLabels = (list) => {
       tempRatingCount += 1;
       ratingList[rating].count = tempRatingCount;
     }
+    // TYPE
+    let type = data.type;
+    let temTypeCount = typeListLabel[type];
+    if (temTypeCount) {
+      temTypeCount = typeListLabel[type].count;
+      temTypeCount += 1;
+      typeListLabel[type].count = temTypeCount;
+    } else {
+      typeListLabel[type] = { count: 1 };
+    }
+    //  BRAND
+    let brand = data.brand;
+    let tempbrandCount = brandListLabel[brand];
+    if (tempbrandCount) {
+      tempbrandCount = brandListLabel[brand].count;
+      tempbrandCount += 1;
+      brandListLabel[brand].count = tempbrandCount;
+    } else {
+      brandListLabel[brand] = { count: 1 };
+    }
   });
-  let returnTypeLabels = typeListLabel.slice(0, 5);
-  let returnBrandLabels = brandListLabel.slice(0, 5);
+  for (const [key, value] of Object.entries(brandListLabel)) {
+    brandListArray.push({ key, value });
+  }
+  for (const [key, value] of Object.entries(typeListLabel)) {
+    typeListArray.push({ key, value });
+  }
+  let returnBrandLabels = brandListArray.sort(
+    (a, b) => b.value.count - a.value.count
+  );
+  let returnTypeLabels = typeListArray.sort(
+    (a, b) => b.value.count - a.value.count
+  );
   return {
     brandLabels: returnBrandLabels,
     typeLabels: returnTypeLabels,
@@ -132,6 +169,7 @@ export function* setLabelsByCategory({ payload }) {
 export function* getProductsByCategory({ payload }) {
   const { newCategory } = payload;
   const product = yield select(getProduct);
+  console.log(product);
   const { category, ...rest } = product;
 
   try {
@@ -171,12 +209,20 @@ export function* filterProductsByPriceRange({ payload: priceRange }) {
   yield put(setPriceRangeCheckSuccess(priceRange));
 }
 
+export function* filterProductsByCustomPrice({ payload }) {
+  yield put(setCustomPriceSuccess(payload));
+}
+
 export function* getProductsByPage({ payload: page }) {
   yield put(setPageSuccess(page));
 }
 
 export function* getProductsBySort({ payload: sortBy }) {
   yield put(setSortSuccess(sortBy));
+}
+
+export function* getProductsBySearch({ payload: queryString }) {
+  yield put(setSearchSuccess(queryString));
 }
 
 export function* onLoadingProducts() {
@@ -204,6 +250,11 @@ export function* onSetPriceRange() {
   yield takeEvery(SET_PRICERANGE_CHECK_SUCCESS, getProductsByCategory);
 }
 
+export function* onSetCustomPrice() {
+  yield takeLatest(SET_CUSTOMPRICE_REQUEST, filterProductsByCustomPrice);
+  yield takeEvery(SET_CUSTOMPRICE_SUCCESS, getProductsByCategory);
+}
+
 export function* onSetPage() {
   yield takeLatest(SET_PAGE_REQUEST, getProductsByPage);
   yield takeEvery(SET_PAGE_SUCCESS, getProductsByCategory);
@@ -214,6 +265,11 @@ export function* onSetSort() {
   yield takeEvery(SET_SORT_SUCCESS, getProductsByCategory);
 }
 
+export function* onSetSearching() {
+  yield takeLatest(SET_SEARCH_REQUEST, getProductsBySearch);
+  yield takeEvery(SET_SEARCH_SUCCESS, getProductsByCategory);
+}
+
 export function* productSaga() {
   yield all([
     call(onLoadingProducts),
@@ -221,7 +277,9 @@ export function* productSaga() {
     call(onSetBrand),
     call(onSetRating),
     call(onSetPriceRange),
+    call(onSetCustomPrice),
     call(onSetPage),
     call(onSetSort),
+    call(onSetSearching),
   ]);
 }

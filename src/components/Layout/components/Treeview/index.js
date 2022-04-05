@@ -4,6 +4,7 @@ import TreeView from "@mui/lab/TreeView";
 import { BsChevronDown, BsChevronRight } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { getProductsRequest } from "../../../../actions";
+import "./style.scss";
 
 const treelist = [
   {
@@ -51,6 +52,19 @@ const treelist = [
       { title: "Home Audio Accessories" },
       { title: "In-Home Speakers" },
       { title: "Ipod and MP3 Players" },
+    ],
+  },
+  {
+    title: "Cameras & Camcorders",
+    childrens: [
+      { title: "Binoculars" },
+      { title: "Camcorder Accessories" },
+      { title: "Camcorders" },
+      { title: "Digital Cameras" },
+      { title: "Memory Card" },
+      { title: "Microscopes" },
+      { title: "Monoculars" },
+      { title: "Telescopes" },
     ],
   },
 ];

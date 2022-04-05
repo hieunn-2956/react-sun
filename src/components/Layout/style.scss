@@ -52,6 +52,7 @@
 
     .custom-price {
       @include flex($justify: center, $align: center, $gap: 0.3rem);
+      margin-top: 1rem;
 
       label {
         @include flex($justify: center, $align: center, $gap: 0.5rem);
@@ -60,6 +61,11 @@
           height: 1.4rem;
           width: 3rem;
         }
+      }
+
+      &__btn {
+        margin-top: 1rem;
+        padding: 0.5rem 0.8rem;
       }
     }
   }
