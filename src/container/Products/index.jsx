@@ -13,10 +13,10 @@ import "./style.scss";
 
 export const Products = (props) => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.product);
+  const { products, category } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(getProductsRequest({ category: "Appliances" }));
+    dispatch(getProductsRequest({ newCategory: category }));
   }, []);
 
   const renderProducts = (list) => {
