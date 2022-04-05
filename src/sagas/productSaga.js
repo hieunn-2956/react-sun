@@ -13,6 +13,10 @@ import {
   SET_BRAND_CHECK_REQUEST,
   SET_RATING_CHECK_REQUEST,
   SET_PRICERANGE_CHECK_REQUEST,
+  SET_TYPE_CHECK_SUCCESS,
+  SET_RATING_CHECK_SUCCESS,
+  SET_PRICERANGE_CHECK_SUCCESS,
+  SET_BRAND_CHECK_SUCCESS,
 } from "../actions/constant";
 import {
   getProductsSuccess,
@@ -26,14 +30,37 @@ import {
 import { initialState } from "../reducers/product.reducer";
 import axiosInstance from "../helper/axios";
 
-const getProducts = async ({ category }) => {
-  const response = await axiosInstance.get(`/products`, {
-    params: {
-      _page: initialState.page,
-      _limit: initialState.limit,
-      categories_like: category,
-    },
-  });
+const getProduct = (state) => state.product;
+
+const getProducts = async ({
+  category,
+  typeList,
+  brandList,
+  rating,
+  priceRange,
+  sortBy,
+  queryString,
+  page,
+}) => {
+  const typeParams =
+    typeList && typeList.map((type) => `&type=${type}`).join("");
+  const brandParams =
+    brandList && brandList.map((brand) => `&brand=${brand}`).join("");
+  const response = await axiosInstance.get(
+    `/products?${typeParams}${brandParams}`,
+    {
+      params: {
+        _page: page,
+        _limit: initialState.limit,
+        categories_like: category,
+        ...(rating && { rating }),
+        ...(priceRange && { price_range: priceRange }),
+        ...(sortBy && { _sort: "price" }),
+        ...(sortBy && { _order: sortBy }),
+        ...(queryString && { name_like: queryString }),
+      },
+    }
+  );
   return response.data;
 };
 
@@ -96,10 +123,24 @@ export function* setLabelsByCategory({ payload }) {
 }
 
 export function* getProductsByCategory({ payload }) {
-  const { category } = payload;
+  const { newCategory } = payload;
+  const product = yield select(getProduct);
+  const { category, ...rest } = product;
+
   try {
-    const products = yield getProducts({ category });
-    yield put(getProductsSuccess({ products, category }));
+    if (newCategory) {
+      const products = yield getProducts({
+        category: newCategory,
+        ...rest,
+      });
+      yield put(getProductsSuccess({ products, category: newCategory }));
+    } else {
+      const products = yield getProducts({
+        category,
+        ...rest,
+      });
+      yield put(getProductsSuccess({ products, category }));
+    }
   } catch (error) {
     yield put(getProductsFailure(error));
   }
@@ -128,18 +169,22 @@ export function* onLoadingProducts() {
 
 export function* onSetType() {
   yield takeLatest(SET_TYPE_CHECK_REQUEST, filterProductsByType);
+  yield takeEvery(SET_TYPE_CHECK_SUCCESS, getProductsByCategory);
 }
 
 export function* onSetBrand() {
   yield takeLatest(SET_BRAND_CHECK_REQUEST, filterProductsByBrand);
+  yield takeEvery(SET_BRAND_CHECK_SUCCESS, getProductsByCategory);
 }
 
 export function* onSetRating() {
   yield takeLatest(SET_RATING_CHECK_REQUEST, filterProductsByRating);
+  yield takeEvery(SET_RATING_CHECK_SUCCESS, getProductsByCategory);
 }
 
 export function* onSetPriceRange() {
   yield takeLatest(SET_PRICERANGE_CHECK_REQUEST, filterProductsByPriceRange);
+  yield takeEvery(SET_PRICERANGE_CHECK_SUCCESS, getProductsByCategory);
 }
 
 export function* productSaga() {

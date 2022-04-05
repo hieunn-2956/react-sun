@@ -17,7 +17,7 @@ import {
 } from "../actions/constant";
 
 export const initialState = {
-  category: "",
+  category: "Appliances",
   products: [],
   totalProduct: 0,
   page: 1,
@@ -43,15 +43,11 @@ export default (state = initialState, action) => {
       };
     case GET_PRODUCTS_SUCCESS:
       const { products, category } = action.payload;
+      console.log(category);
       return {
         ...state,
         products,
         category,
-        page: 1,
-        typeList: [],
-        brandList: [],
-        rating: "",
-        priceRange: "",
         loading: false,
       };
     case GET_PRODUCTS_FAILURE:
