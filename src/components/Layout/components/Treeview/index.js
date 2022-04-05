@@ -57,8 +57,9 @@ const treelist = [
 
 const Treeview = () => {
   const dispatch = useDispatch();
+
   const handleGetProductsByCategory = (value) => {
-    dispatch(getProductsRequest(value));
+    dispatch(getProductsRequest({ category: value }));
   };
 
   const renderTree = (categories) => {

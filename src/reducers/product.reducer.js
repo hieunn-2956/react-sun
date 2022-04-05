@@ -4,6 +4,16 @@ import {
   GET_PRODUCTS_FAILURE,
   GET_PRODUCTS_REQUEST,
   SET_LABELS,
+  SET_RATING_CHECK,
+  SET_PRICERANGE_CHECK,
+  SET_TYPE_CHECK_REQUEST,
+  SET_TYPE_CHECK_SUCCESS,
+  SET_BRAND_CHECK_REQUEST,
+  SET_BRAND_CHECK_SUCCESS,
+  SET_RATING_CHECK_REQUEST,
+  SET_RATING_CHECK_SUCCESS,
+  SET_PRICERANGE_CHECK_REQUEST,
+  SET_PRICERANGE_CHECK_SUCCESS,
 } from "../actions/constant";
 
 export const initialState = {
@@ -37,6 +47,11 @@ export default (state = initialState, action) => {
         ...state,
         products,
         category,
+        page: 1,
+        typeList: [],
+        brandList: [],
+        rating: "",
+        priceRange: "",
         loading: false,
       };
     case GET_PRODUCTS_FAILURE:
@@ -56,6 +71,48 @@ export default (state = initialState, action) => {
         ratingLabels,
       };
     }
+
+    case SET_TYPE_CHECK_REQUEST:
+      return {
+        ...state,
+      };
+    case SET_TYPE_CHECK_SUCCESS:
+      return {
+        ...state,
+        typeList: action.payload,
+      };
+
+    case SET_BRAND_CHECK_REQUEST:
+      return {
+        ...state,
+      };
+    case SET_BRAND_CHECK_SUCCESS:
+      return {
+        ...state,
+        brandList: action.payload,
+      };
+
+    case SET_RATING_CHECK_REQUEST:
+      return {
+        ...state,
+      };
+    case SET_RATING_CHECK_SUCCESS:
+      return {
+        ...state,
+        rating: action.payload,
+      };
+
+    case SET_PRICERANGE_CHECK_REQUEST:
+      return {
+        ...state,
+      };
+
+    case SET_PRICERANGE_CHECK_SUCCESS:
+      return {
+        ...state,
+        priceRange: action.payload,
+      };
+
     default:
       return state;
   }
